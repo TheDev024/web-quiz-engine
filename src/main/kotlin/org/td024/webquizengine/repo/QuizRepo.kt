@@ -1,17 +1,16 @@
 package org.td024.webquizengine.repo
 
+import org.springframework.stereotype.Component
+import org.td024.webquizengine.dto.QuizDTO
 import org.td024.webquizengine.entity.Quiz
 
+@Component
 class QuizRepo {
-    private val quizzes = mutableListOf(
-        Quiz(
-            "Kotlin keywords    ",
-            "Which of the following is a keyword used to declare a variable in Kotlin?",
-            listOf("val", "let", "var", "const")
-        )
-    )
+    private val quizzes = mutableListOf<Quiz>()
 
-    fun getById(id: Int) = quizzes[id]
+    fun getNewId() = quizzes.size
+
+    fun getById(id: Int): Quiz? = quizzes.find { it.id == id }
 
     fun getAll() = quizzes
 

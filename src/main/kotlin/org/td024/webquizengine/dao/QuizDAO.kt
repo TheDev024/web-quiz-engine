@@ -1,7 +1,6 @@
-package org.td024.webquizengine.entity
+package org.td024.webquizengine.dao
 
-data class Quiz (
-    val id: Int? = null,
+data class QuizDAO(
     val title: String,
     val text: String,
     val options: List<String>,

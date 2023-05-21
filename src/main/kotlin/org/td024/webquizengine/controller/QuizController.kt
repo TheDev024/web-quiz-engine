@@ -1,25 +1,40 @@
 package org.td024.webquizengine.controller
 
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.*
+import org.springframework.web.server.ResponseStatusException
+import org.td024.webquizengine.dao.QuizDAO
+import org.td024.webquizengine.dto.QuizDTO
 import org.td024.webquizengine.entity.Response
+import org.td024.webquizengine.mapper.QuizMapper
 import org.td024.webquizengine.repo.QuizRepo
 
 @RestController
-@RequestMapping("/api")
-class QuizController {
-    val repo = QuizRepo()
+@RequestMapping("/api/quizzes")
+class QuizController(@Autowired val repo: QuizRepo, @Autowired val mapper: QuizMapper) {
+    @GetMapping
+    fun getAllQuizzes() = repo.getAll().map { quiz -> mapper.quizToQuizDTO(quiz) }
 
-    @GetMapping("/quiz")
-    fun getQuiz() = repo.getById(0)
+    @GetMapping("/{id}")
+    fun getQuizById(@PathVariable id: Int) =
+        mapper.quizToQuizDTO(repo.getById(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND))
 
-    @PostMapping("/quiz")
-    fun answerQuiz(@RequestParam answer: Int) = Response(
-        answer == 2,
-        if (answer == 2) "Congratulations, you're right!"
-        else "Wrong answer! Please, try again."
-    )
+    @PostMapping
+    fun addQuiz(@RequestBody quizDAO: QuizDAO): QuizDTO {
+        val quiz = mapper.quizDAOToQuiz(quizDAO)
+        repo.save(quiz)
+        return mapper.quizToQuizDTO(quiz)
+    }
+
+    @PostMapping("/{id}/solve")
+    fun answerQuiz(@PathVariable id: Int, @RequestParam answer: Int): Response {
+        val quiz = repo.getById(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+        val result = answer == quiz.answer
+        return Response(
+            result,
+            if (result) "Congratulations, you're right!"
+            else "Wrong answer! Please, try again."
+        )
+    }
 }
