@@ -1,5 +1,6 @@
 package org.td024.webquizengine.controller
 
+import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -21,14 +22,14 @@ class QuizController(@Autowired val repo: QuizRepo, @Autowired val mapper: QuizM
         mapper.quizToQuizDTO(repo.getById(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND))
 
     @PostMapping
-    fun addQuiz(@RequestBody quizDAO: QuizDAO): QuizDTO {
+    fun addQuiz(@RequestBody @Valid quizDAO: QuizDAO): QuizDTO {
         val quiz = mapper.quizDAOToQuiz(quizDAO)
         repo.save(quiz)
         return mapper.quizToQuizDTO(quiz)
     }
 
     @PostMapping("/{id}/solve")
-    fun answerQuiz(@PathVariable id: Int, @RequestParam answer: Int): Response {
+    fun answerQuiz(@PathVariable id: Int, @RequestBody answer: List<Int>): Response {
         val quiz = repo.getById(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
         val result = answer == quiz.answer
         return Response(

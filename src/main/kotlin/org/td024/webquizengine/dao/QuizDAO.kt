@@ -1,8 +1,11 @@
 package org.td024.webquizengine.dao
 
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.Size
+
 data class QuizDAO(
-    val title: String,
-    val text: String,
-    val options: List<String>,
-    val answer: Int
+    @field:NotBlank val title: String,
+    @field:NotBlank val text: String,
+    @field:Size(min = 2) val options: List<String>,
+    val answer: List<Int>
 )
