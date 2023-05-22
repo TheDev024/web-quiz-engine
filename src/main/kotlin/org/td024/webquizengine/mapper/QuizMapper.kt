@@ -10,7 +10,7 @@ import org.td024.webquizengine.repo.QuizRepo
 @Component
 class QuizMapper(@Autowired val repo: QuizRepo) {
     fun quizToQuizDTO(quiz: Quiz): QuizDTO = QuizDTO(
-        quiz.id!!,
+        quiz.id,
         quiz.title,
         quiz.text,
         quiz.options
@@ -21,6 +21,6 @@ class QuizMapper(@Autowired val repo: QuizRepo) {
         quizDAO.title,
         quizDAO.text,
         quizDAO.options,
-        quizDAO.answer
+        quizDAO.answer ?: emptyList()
     )
 }
