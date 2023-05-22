@@ -7,5 +7,5 @@ data class QuizDAO(
     @field:NotBlank val title: String,
     @field:NotBlank val text: String,
     @field:Size(min = 2) val options: List<String>,
-    val answer: List<Int>
+    val answer: List<Int>? = null
 )

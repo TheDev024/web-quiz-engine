@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import org.td024.webquizengine.dao.QuizDAO
-import org.td024.webquizengine.dao.SolutionDAO
+import org.td024.webquizengine.dao.AnswerDAO
 import org.td024.webquizengine.dto.QuizDTO
 import org.td024.webquizengine.entity.Response
 import org.td024.webquizengine.mapper.QuizMapper
@@ -30,9 +30,9 @@ class QuizController(@Autowired val repo: QuizRepo, @Autowired val mapper: QuizM
     }
 
     @PostMapping("/{id}/solve")
-    fun answerQuiz(@PathVariable id: Int, @RequestBody solution: SolutionDAO): Response {
+    fun answerQuiz(@PathVariable id: Int, @RequestBody answerDAO: AnswerDAO): Response {
         val quiz = repo.getById(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
-        val result = solution.answer == quiz.answer
+        val result = answerDAO.answer == quiz.answer
         return Response(
             result,
             if (result) "Congratulations, you're right!"

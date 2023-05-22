@@ -21,6 +21,6 @@ class QuizMapper(@Autowired val repo: QuizRepo) {
         quizDAO.title,
         quizDAO.text,
         quizDAO.options,
-        quizDAO.answer
+        quizDAO.answer ?: emptyList()
     )
 }
