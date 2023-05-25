@@ -7,7 +7,6 @@ import org.td024.webquizengine.repo.QuizRepo
 
 @Service
 class QuizService(@Autowired private val repo: QuizRepo) {
-    private val quizzes = mutableListOf<Quiz>()
 
     fun getById(id: Int) = repo.getReferenceById(id)
 
@@ -15,5 +14,4 @@ class QuizService(@Autowired private val repo: QuizRepo) {
 
     fun save(quiz: Quiz) = repo.save(quiz)
 
-    fun delete(id: Int) = repo.deleteById(id)
 }
