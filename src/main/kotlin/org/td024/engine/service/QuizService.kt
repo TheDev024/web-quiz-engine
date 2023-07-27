@@ -10,6 +10,8 @@ import org.td024.engine.repo.QuizRepository
 @Service
 class QuizService(@Autowired private val repository: QuizRepository) {
 
+    fun getAll(): List<Quiz> = repository.findAll()
+
     fun findQuizById(id: Long) = repository.findQuizById(id)
 
     fun save(quiz: Quiz): Quiz = repository.save(quiz)
