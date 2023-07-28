@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
+import org.td024.engine.dao.AnswerDao
 import org.td024.engine.entity.Quiz
 import org.td024.engine.model.Response
 import org.td024.engine.repo.QuizRepository
@@ -17,12 +18,11 @@ class QuizService(@Autowired private val repository: QuizRepository) {
 
     fun save(quiz: Quiz): Quiz = repository.save(quiz)
 
-    fun solve(quizId: Long, answer: Int): Response {
+    fun solve(quizId: Long, answerDao: AnswerDao): Response {
         val quiz = findQuizById(quizId)
 
-        val (success, feedback) =
-            if (quiz.answer == answer) Pair(true, "Congratulations, you're right!")
-            else Pair(false, "Wrong answer! Please, try again.")
+        val success = quiz.answer == answerDao.answer
+        val feedback = if (success) "Congratulations, you're right!" else "Wrong answerDao! Please, try again."
 
         return Response(success, feedback)
     }
