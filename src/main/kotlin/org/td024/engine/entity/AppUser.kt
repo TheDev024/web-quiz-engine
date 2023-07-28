@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.td024.engine.dao.UserDao
 
 @Entity
@@ -18,21 +19,30 @@ data class AppUser(
     private val password: String? = null
 ) : UserDetails {
 
+    @JsonIgnore
     override fun getAuthorities(): List<GrantedAuthority> = emptyList()
 
     override fun getPassword(): String = password!!
 
+    @JsonIgnore
     override fun getUsername(): String = email!!
 
+    @JsonIgnore
     override fun isAccountNonExpired(): Boolean = true
 
+    @JsonIgnore
     override fun isAccountNonLocked(): Boolean = true
 
+    @JsonIgnore
     override fun isCredentialsNonExpired(): Boolean = true
 
+    @JsonIgnore
     override fun isEnabled(): Boolean = true
 
     companion object {
-        fun build(userDao: UserDao) = AppUser(email = userDao.email, password = userDao.password)
+
+        private val encoder = BCryptPasswordEncoder()
+
+        fun build(userDao: UserDao) = AppUser(email = userDao.email, password = encoder.encode(userDao.password))
     }
 }

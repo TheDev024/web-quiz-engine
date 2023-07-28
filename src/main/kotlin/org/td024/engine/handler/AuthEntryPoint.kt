@@ -14,6 +14,6 @@ class AuthEntryPoint : AuthenticationEntryPoint {
         response: HttpServletResponse,
         authException: AuthenticationException
     ) {
-        response.sendError(HttpServletResponse.SC_CONFLICT, authException.message)
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.message)
     }
 }
