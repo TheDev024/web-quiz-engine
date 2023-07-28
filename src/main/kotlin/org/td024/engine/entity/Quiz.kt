@@ -17,5 +17,6 @@ data class Quiz(
     @ElementCollection
     val options: List<String>? = null,
     @JsonIgnore
-    val answer: Int = 0
+    @ElementCollection
+    val answer: List<Int>? = null
 )
