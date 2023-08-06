@@ -26,4 +26,6 @@ class QuizService(@Autowired private val repository: QuizRepository) {
 
         return Response(success, feedback)
     }
+
+    fun delete(id: Long) = repository.deleteById(id)
 }

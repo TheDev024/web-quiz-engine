@@ -12,6 +12,9 @@ data class Quiz(
     val text: String? = null,
     @ElementCollection
     val options: List<String>? = null,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumns(JoinColumn(name = "author_id"))
+    val author: AppUser? = null,
     @JsonIgnore
     @ElementCollection
     val answer: List<Int>? = null
