@@ -9,15 +9,12 @@ import org.springframework.web.server.ResponseStatusException
 import org.td024.engine.dao.AnswerDao
 import org.td024.engine.entity.AppUser
 import org.td024.engine.entity.Quiz
-import org.td024.engine.entity.Solution
 import org.td024.engine.model.Response
 import org.td024.engine.repo.QuizRepository
-import java.time.LocalDateTime
 
 @Service
 class QuizService(
-    @Autowired private val quizRepository: QuizRepository,
-    @Autowired private val solutionService: SolutionService
+    @Autowired private val quizRepository: QuizRepository
 ) {
 
     fun getAll(page: Int, size: Int): Page<Quiz> = quizRepository.findAll(PageRequest.of(page, size))
@@ -29,16 +26,8 @@ class QuizService(
     fun solve(quizId: Long, answerDao: AnswerDao, user: AppUser): Response {
         val quiz = findQuizById(quizId)
 
-        val success = quiz.answer == answerDao.answer
+        val success = answerDao.answer == quiz.answer
         val feedback = if (success) "Congratulations, you're right!" else "Wrong answer! Please, try again."
-
-        if (success) solutionService.save(
-            Solution(
-                completedAt = LocalDateTime.now(),
-                quiz = quiz,
-                user = user
-            )
-        )
 
         return Response(success, feedback)
     }

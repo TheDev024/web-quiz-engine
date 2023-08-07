@@ -11,6 +11,7 @@ import org.td024.engine.dao.AnswerDao
 import org.td024.engine.dao.QuizDao
 import org.td024.engine.entity.AppUser
 import org.td024.engine.mapper.QuizMapper
+import org.td024.engine.model.Response
 import org.td024.engine.service.QuizService
 import org.td024.engine.service.SolutionService
 
@@ -41,7 +42,11 @@ class QuizController(
         quizService.save(mapper.quizDaoToQuiz(quizDao, user))
 
     @PostMapping("/{id}/solve")
-    fun solve(@PathVariable id: Long, @RequestBody answerDao: AnswerDao, @AuthenticationPrincipal user: AppUser) =
+    fun solve(
+        @PathVariable id: Long,
+        @RequestBody answerDao: AnswerDao,
+        @AuthenticationPrincipal user: AppUser
+    ): Response =
         quizService.solve(id, answerDao, user)
 
     @Transactional

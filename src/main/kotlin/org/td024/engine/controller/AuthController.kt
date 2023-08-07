@@ -1,5 +1,6 @@
 package org.td024.engine.controller
 
+import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -13,5 +14,5 @@ import org.td024.engine.service.UserService
 class AuthController(@Autowired private val userService: UserService) {
 
     @PostMapping("/register")
-    fun register(@RequestBody userDao: UserDao) = userService.save(userDao)
+    fun register(@Valid @RequestBody userDao: UserDao) = userService.save(userDao)
 }
