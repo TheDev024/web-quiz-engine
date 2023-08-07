@@ -7,27 +7,41 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
 import org.td024.engine.dao.AnswerDao
+import org.td024.engine.entity.AppUser
 import org.td024.engine.entity.Quiz
+import org.td024.engine.entity.Solution
 import org.td024.engine.model.Response
 import org.td024.engine.repo.QuizRepository
+import java.time.LocalDateTime
 
 @Service
-class QuizService(@Autowired private val repository: QuizRepository) {
+class QuizService(
+    @Autowired private val quizRepository: QuizRepository,
+    @Autowired private val solutionService: SolutionService
+) {
 
-    fun getAll(page: Int, size: Int): Page<Quiz> = repository.findAll(PageRequest.of(page, size))
+    fun getAll(page: Int, size: Int): Page<Quiz> = quizRepository.findAll(PageRequest.of(page, size))
 
-    fun findQuizById(id: Long) = repository.findQuizById(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+    fun findQuizById(id: Long) = quizRepository.findQuizById(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 
-    fun save(quiz: Quiz): Quiz = repository.save(quiz)
+    fun save(quiz: Quiz): Quiz = quizRepository.save(quiz)
 
-    fun solve(quizId: Long, answerDao: AnswerDao): Response {
+    fun solve(quizId: Long, answerDao: AnswerDao, user: AppUser): Response {
         val quiz = findQuizById(quizId)
 
         val success = quiz.answer == answerDao.answer
-        val feedback = if (success) "Congratulations, you're right!" else "Wrong answerDao! Please, try again."
+        val feedback = if (success) "Congratulations, you're right!" else "Wrong answer! Please, try again."
+
+        if (success) solutionService.save(
+            Solution(
+                completedAt = LocalDateTime.now(),
+                quiz = quiz,
+                user = user
+            )
+        )
 
         return Response(success, feedback)
     }
 
-    fun delete(id: Long) = repository.deleteById(id)
+    fun delete(id: Long) = quizRepository.deleteById(id)
 }
