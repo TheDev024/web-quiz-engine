@@ -17,7 +17,8 @@ import org.td024.engine.service.QuizService
 class QuizController(@Autowired private val service: QuizService, @Autowired private val mapper: QuizMapper) {
 
     @GetMapping
-    fun getAll() = service.getAll()
+    fun getAll(@RequestParam(defaultValue = "1") page: Int, @RequestParam(defaultValue = "10") size: Int) =
+        service.getAll(page - 1, size)
 
     @GetMapping("/{id}")
     fun getById(@PathVariable id: Long) = service.findQuizById(id)

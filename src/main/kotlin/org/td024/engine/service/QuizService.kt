@@ -1,6 +1,8 @@
 package org.td024.engine.service
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
@@ -12,7 +14,7 @@ import org.td024.engine.repo.QuizRepository
 @Service
 class QuizService(@Autowired private val repository: QuizRepository) {
 
-    fun getAll(): List<Quiz> = repository.findAll().ifEmpty { throw ResponseStatusException(HttpStatus.NO_CONTENT) }
+    fun getAll(page: Int, size: Int): Page<Quiz> = repository.findAll(PageRequest.of(page, size))
 
     fun findQuizById(id: Long) = repository.findQuizById(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 
